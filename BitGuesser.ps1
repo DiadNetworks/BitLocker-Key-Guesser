@@ -1,3 +1,9 @@
+function RefreshDrives {
+    $driveLetters = [System.IO.DriveInfo]::getdrives() | Where-Object {$_.DriveType -ne 'Network'} | Select-Object -Property Name | ForEach-Object { $_.Name -replace '\\', '' }
+    $driveSelectBox.Items.Clear()
+    $driveSelectBox.Items.AddRange($driveLetters)
+}
+
 # Loading external assemblies
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
@@ -20,24 +26,26 @@ $guesserProgressBar.Location = New-Object System.Drawing.Point(13, 226)
 $guesserProgressBar.Name = "guesserProgressBar"
 $guesserProgressBar.Size = New-Object System.Drawing.Size(359, 23)
 $guesserProgressBar.Style = [System.Windows.Forms.ProgressBarStyle]::Marquee
-$guesserProgressBar.TabIndex = 0
+$guesserProgressBar.TabIndex = 6
 #
 # guesserProgressLabel
 #
 $guesserProgressLabel.AutoSize = $true
-$guesserProgressLabel.Location = New-Object System.Drawing.Point(12, 210)
+$guesserProgressLabel.Location = New-Object System.Drawing.Point(12, 200)
 $guesserProgressLabel.Name = "guesserProgressLabel"
 $guesserProgressLabel.Size = New-Object System.Drawing.Size(146, 13)
-$guesserProgressLabel.TabIndex = 1
+$guesserProgressLabel.TabIndex = 5
 $guesserProgressLabel.Text = "Progress message goes here."
 #
 # driveSelectBox
 #
 $driveSelectBox.FormattingEnabled = $true
-$driveSelectBox.Location = New-Object System.Drawing.Point(134, 14)
+$driveSelectBox.Location = New-Object System.Drawing.Point(144, 14)
 $driveSelectBox.Name = "driveSelectBox"
 $driveSelectBox.Size = New-Object System.Drawing.Size(40, 21)
-$driveSelectBox.TabIndex = 2
+$driveSelectBox.TabIndex = 1
+$driveSelectBox.DropDownStyle = "DropDownList"
+RefreshDrives
 #
 # driveLetterLabel
 #
@@ -45,7 +53,7 @@ $driveLetterLabel.AutoSize = $true
 $driveLetterLabel.Location = New-Object System.Drawing.Point(12, 17)
 $driveLetterLabel.Name = "driveLetterLabel"
 $driveLetterLabel.Size = New-Object System.Drawing.Size(119, 13)
-$driveLetterLabel.TabIndex = 3
+$driveLetterLabel.TabIndex = 0
 $driveLetterLabel.Text = "Bit Locked Drive Letter:"
 #
 # processAmountLabel
@@ -54,12 +62,12 @@ $processAmountLabel.AutoSize = $true
 $processAmountLabel.Location = New-Object System.Drawing.Point(12, 43)
 $processAmountLabel.Name = "processAmountLabel"
 $processAmountLabel.Size = New-Object System.Drawing.Size(139, 13)
-$processAmountLabel.TabIndex = 4
+$processAmountLabel.TabIndex = 3
 $processAmountLabel.Text = "Amount of processes to run:"
 #
 # processAmountSelector
 #
-$processAmountSelector.Location = New-Object System.Drawing.Point(157, 41)
+$processAmountSelector.Location = New-Object System.Drawing.Point(167, 41)
 #$processAmountSelector.Maximum = New-Object decimal(@(
 #1410065407,
 #2,
@@ -67,7 +75,7 @@ $processAmountSelector.Location = New-Object System.Drawing.Point(157, 41)
 #0))
 $processAmountSelector.Name = "processAmountSelector"
 $processAmountSelector.Size = New-Object System.Drawing.Size(80, 20)
-$processAmountSelector.TabIndex = 5
+$processAmountSelector.TabIndex = 4
 $processAmountSelector.Value = 10
 #
 # refreshButton
@@ -75,9 +83,10 @@ $processAmountSelector.Value = 10
 $refreshButton.Location = New-Object System.Drawing.Point(272, 12)
 $refreshButton.Name = "refreshButton"
 $refreshButton.Size = New-Object System.Drawing.Size(100, 23)
-$refreshButton.TabIndex = 6
+$refreshButton.TabIndex = 2
 $refreshButton.Text = "Refresh Drives"
 $refreshButton.UseVisualStyleBackColor = $true
+$refreshButton.Add_Click({RefreshDrives})
 #
 # BitGuesserGUI
 #
