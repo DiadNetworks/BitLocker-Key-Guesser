@@ -15,7 +15,7 @@ function OnStartButtonClick {
     Write-Host "$($driveSelectBox.Text)"
     Write-Host "$driveLetter"
     for ($i = 1; $i -le $processAmountSelector.Value; $i++) {
-        $proc = Start-Process -FilePath powershell -ArgumentList "-NoProfile -WindowStyle Hidden -File .\BitGuesserProcess.ps1 -driveLetter $driveLetter" -PassThru
+        $proc = Start-Process -FilePath powershell -ArgumentList "-NoProfile -WindowStyle Hidden -File .\Scripts\BitGuesserProcess.ps1 -driveLetter $driveLetter" -PassThru
         $global:process += $proc
         Write-Host "Process $i started: $($process[$i - 1].Id)"
         $infoBox.Text = "Processes running: $i`r`n"
@@ -168,6 +168,7 @@ $BitGuesserGUI.Controls.Add($driveSelectBox)
 $BitGuesserGUI.Controls.Add($guesserProgressLabel)
 $BitGuesserGUI.Controls.Add($guesserProgressBar)
 $BitGuesserGUI.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedSingle
+$BitGuesserGUI.MaximizeBox = $false
 $BitGuesserGUI.Name = "BitGuesserGUI"
 $BitGuesserGUI.Text = "BitLocker-Key-Guesser"
 $BitGuesserGUI.Icon = ".\Images\logo.ico"
