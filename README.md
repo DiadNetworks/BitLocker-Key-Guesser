@@ -13,7 +13,7 @@ Refer to the [controls section](https://github.com/DiadNetworks/BitLocker-Key-Gu
   
 **Refresh Drives:** Use this button to refresh the list of drives. Useful if you ran the program before plugging in the bit locked drive.  
   
-**Amount of processes to run:** Select how many processes you want the program to start. Each process will make independent guesses on the bit locked drive. Recommended to do between 100-500, or more if your computer can handle it. Be careful of going to high with this.  
+**Amount of processes to run:** Select how many processes you want the program to start. Each process will make independent guesses on the bit locked drive. Recommended to do between 100-500, or more if your computer can handle it. Be careful of going too high with this.  
   
 **Info Window:** Displays info regarding the running processes. Currently only displays the amount of processes running (as of now, this number is only updated when using the start and stop buttons).  
   
