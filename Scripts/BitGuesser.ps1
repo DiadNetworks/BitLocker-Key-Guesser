@@ -1,3 +1,5 @@
+#Requires -RunAsAdministrator
+
 function RefreshDrives {
     $driveLetters = [System.IO.DriveInfo]::getdrives() | Where-Object {$_.DriveType -ne 'Network'} | Select-Object -Property Name | ForEach-Object { $_.Name -replace '\\', '' }
     $driveSelectBox.Items.Clear()
