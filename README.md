@@ -10,11 +10,17 @@ Refer to the [controls section](https://github.com/DiadNetworks/BitLocker-Key-Gu
 ![Local Image](Images/gui-image.png)  
   
 **Bit Locked Drive Letter:** Use this dropdown to select the bit locked drive that you want to guess the key for.  
+  
 **Refresh Drives:** Use this button to refresh the list of drives. Useful if you ran the program before plugging in the bit locked drive.  
+  
 **Amount of processes to run:** Select how many processes you want the program to start. Each process will make independent guesses on the bit locked drive. Recommended to do between 100-1000 and more if your computer can handle it. Be careful of going to high with this.  
+  
 **Info Window:** Displays info regarding the running processes. Currently only displays the amount of processes running (as of now, this number is only updated when using the start and stop buttons).  
+  
 **Start:** Click this when you're ready to start guessing the key. It will start the processes using the drive letter and amount that you specified.  
+  
 **Stop:** Click this if you want to close all running processes. Since the guesses are random, stopping and starting is ok.  
+  
 **Progress Bar:** Just lets you know something is going on.  
 
 ## What happens if it guesses correctly?  
