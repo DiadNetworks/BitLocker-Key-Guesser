@@ -170,6 +170,7 @@ $BitGuesserGUI.Controls.Add($guesserProgressBar)
 $BitGuesserGUI.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedSingle
 $BitGuesserGUI.Name = "BitGuesserGUI"
 $BitGuesserGUI.Text = "BitLocker-Key-Guesser"
+$BitGuesserGUI.Icon = ".\Images\logo.ico"
 
 $BitGuesserGUI.Add_Shown({$BitGuesserGUI.Activate()})
 $BitGuesserGUI.ShowDialog()
