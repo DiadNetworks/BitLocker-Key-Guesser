@@ -30,9 +30,13 @@ while ($true) {
         if ($process.ExitCode -eq 0) {
             Write-Host "$bitKey SUCCESS" -ForegroundColor Green
             $bitKey | Out-File -FilePath ".\SuccessfulKey.txt"
+            $returnValue = @($bitKey, $true)
             break
         } else {
             throw "Unlock failed with exit code $($process.ExitCode)"
+            $returnValue = @($bitKey, $false)
+        } finally {
+            return $returnValue
         }
     }
     catch {
