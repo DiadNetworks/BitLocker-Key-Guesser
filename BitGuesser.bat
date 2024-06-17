@@ -1,2 +1,2 @@
 pushd %~dp0
-powershell -WindowStyle Hidden .\Scripts\BitGuesser.ps1
+pwsh -WindowStyle Hidden .\Scripts\BitGuesser.ps1

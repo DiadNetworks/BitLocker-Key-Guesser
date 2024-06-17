@@ -1,4 +1,7 @@
-#Requires -RunAsAdministrator
+#Requires -Version 7.0
+
+# Get current directory location
+$saveLocation = Get-Location | Select-Object -ExpandProperty Path
 
 function RefreshDrives {
     $driveLetters = [System.IO.DriveInfo]::getdrives() | Where-Object {$_.DriveType -ne 'Network'} | Select-Object -Property Name | ForEach-Object { $_.Name -replace '\\', '' }
@@ -10,32 +13,32 @@ $global:process = @()
 function OnStartButtonClick {
     $global:process = @()
     $guesserProgressBar.MarqueeAnimationSpeed = 10
-    $guesserProgressLabel.Text = "Starting processes..."
+    $guesserProgressLabel.Text = "Starting bit guesser process..."
     $driveLetter = $driveSelectBox.Text
-    Write-Host "$($driveSelectBox.Text)"
-    Write-Host "$driveLetter"
-    for ($i = 1; $i -le $processAmountSelector.Value; $i++) {
-        $proc = Start-Process -FilePath powershell -ArgumentList "-NoProfile -WindowStyle Hidden -File .\Scripts\BitGuesserProcess.ps1 -driveLetter $driveLetter" -PassThru
+    if ($randomRadio.Checked -eq $true) {
+        $proc = Start-Process -FilePath pwsh -ArgumentList "-NoProfile -File .\Scripts\BitGuesserProcess.ps1 -driveLetter $driveLetter -saveLocation $saveLocation" -Verb RunAs -WindowStyle Maximized -PassThru
         $global:process += $proc
-        Write-Host "Process $i started: $($process[$i - 1].Id)"
-        $infoBox.Text = "Processes running: $i`r`n"
     }
-    
+    elseif ($orderRadio.Checked -eq $true) {
+        $proc = Start-Process -FilePath pwsh -ArgumentList "-NoProfile -File .\Scripts\BitGuesserProcess-InOrder.ps1 -driveLetter $driveLetter -saveLocation $saveLocation" -Verb RunAs -WindowStyle Maximized -PassThru
+        $global:process += $proc
+    }
     $guesserProgressLabel.Text = "Generating keys..."
+    $startButton.Enabled = $false
+    $stopButton.Enabled = $true
 }
 
 function OnStopButtonClick {
-    $guesserProgressLabel.Text = "Stopping processes..."
-    
+    $guesserProgressLabel.Text = "Stopping bit guesser process..."
+
     for ($i = 0; $i -lt $global:process.Count; $i++) {
         Stop-Process -Id $global:process[$i].Id
-        Write-Host "Process $($i + 1) stopped: $($global:process[$i].Id)"
-        $infoBox.Text = "Processes running: $($global:process.Count - 1 - $i)`r`n"
     }
-    
     $guesserProgressBar.MarqueeAnimationSpeed = 0
     $guesserProgressBar.Refresh()
     $guesserProgressLabel.Text = ""
+    $startButton.Enabled = $true
+    $stopButton.Enabled = $false
 }
 
 # Loading external assemblies
@@ -55,6 +58,9 @@ $refreshButton = New-Object System.Windows.Forms.Button
 $startButton = New-Object System.Windows.Forms.Button
 $stopButton = New-Object System.Windows.Forms.Button
 $infoBox = New-Object System.Windows.Forms.TextBox
+$modeBox = New-Object System.Windows.Forms.GroupBox
+$randomRadio = New-Object System.Windows.Forms.RadioButton
+$orderRadio = New-Object System.Windows.Forms.RadioButton
 #
 # guesserProgressBar
 #
@@ -65,7 +71,7 @@ $guesserProgressBar.Size = New-Object System.Drawing.Size(359, 23)
 $guesserProgressBar.Style = [System.Windows.Forms.ProgressBarStyle]::Marquee
 $guesserProgressBar.Visible = $true
 $guesserProgressBar.MarqueeAnimationSpeed = 0
-$guesserProgressBar.TabIndex = 9
+$guesserProgressBar.TabIndex = 12
 #
 # guesserProgressLabel
 #
@@ -73,7 +79,7 @@ $guesserProgressLabel.AutoSize = $true
 $guesserProgressLabel.Location = New-Object System.Drawing.Point(12, 204)
 $guesserProgressLabel.Name = "guesserProgressLabel"
 $guesserProgressLabel.Size = New-Object System.Drawing.Size(146, 13)
-$guesserProgressLabel.TabIndex = 8
+$guesserProgressLabel.TabIndex = 11
 $guesserProgressLabel.Text = ""
 #
 # driveSelectBox
@@ -97,6 +103,7 @@ $driveLetterLabel.Text = "Bit Locked Drive Letter:"
 # processAmountLabel
 #
 $processAmountLabel.AutoSize = $true
+$processAmountLabel.Enabled = $false
 $processAmountLabel.Location = New-Object System.Drawing.Point(12, 43)
 $processAmountLabel.Name = "processAmountLabel"
 $processAmountLabel.Size = New-Object System.Drawing.Size(139, 13)
@@ -105,12 +112,13 @@ $processAmountLabel.Text = "Amount of processes to run:"
 #
 # processAmountSelector
 #
+$processAmountSelector.Enabled = $false
 $processAmountSelector.Location = New-Object System.Drawing.Point(175, 41)
-$processAmountSelector.Maximum = 9999999999
+$processAmountSelector.Maximum = 10000
 $processAmountSelector.Name = "processAmountSelector"
-$processAmountSelector.Size = New-Object System.Drawing.Size(80, 20)
+$processAmountSelector.Size = New-Object System.Drawing.Size(40, 20)
 $processAmountSelector.TabIndex = 4
-$processAmountSelector.Value = 10
+$processAmountSelector.Value = 1
 #
 # refreshButton
 #
@@ -128,17 +136,18 @@ RefreshDrives
 $startButton.Location = New-Object System.Drawing.Point(297, 147)
 $startButton.Name = "startButton"
 $startButton.Size = New-Object System.Drawing.Size(75, 23)
-$startButton.TabIndex = 6
+$startButton.TabIndex = 9
 $startButton.Text = "Start"
 $startButton.UseVisualStyleBackColor = $true
 $startButton.Add_Click({OnStartButtonClick})
 #
 # stopButton
 #
+$stopButton.Enabled = $false
 $stopButton.Location = New-Object System.Drawing.Point(297, 176)
 $stopButton.Name = "stopButton"
 $stopButton.Size = New-Object System.Drawing.Size(75, 23)
-$stopButton.TabIndex = 7
+$stopButton.TabIndex = 10
 $stopButton.Text = "Stop"
 $stopButton.UseVisualStyleBackColor = $true
 $stopButton.Add_Click({OnStopButtonClick})
@@ -147,22 +156,56 @@ $stopButton.Add_Click({OnStopButtonClick})
 #
 $infoBox.BackColor = [System.Drawing.SystemColors]::Control
 $infoBox.BorderStyle = [System.Windows.Forms.BorderStyle]::FixedSingle
-$infoBox.Location = New-Object System.Drawing.Point(12, 69)
+$infoBox.Location = New-Object System.Drawing.Point(15, 147)
 $infoBox.Multiline = $true
 $infoBox.Name = "infoBox"
-$infoBox.Size = New-Object System.Drawing.Size(224, 130)
-$infoBox.TabIndex = 5
-$infoBox.Text = "Processes running: `r`n"
+$infoBox.Size = New-Object System.Drawing.Size(276, 52)
+$infoBox.TabIndex = 8
+$infoBox.Text = ""
+#
+# modeBox
+#
+$modeBox.Controls.Add($orderRadio)
+$modeBox.Controls.Add($randomRadio)
+$modeBox.Location = New-Object System.Drawing.Point(15, 67)
+$modeBox.Name = "modeBox"
+$modeBox.Size = New-Object System.Drawing.Size(136, 74)
+$modeBox.TabIndex = 5
+$modeBox.TabStop = $false
+$modeBox.Text = "Mode:"
+#
+# randomRadio
+#
+$randomRadio.AutoSize = $true
+$randomRadio.Checked = $true
+$randomRadio.Location = New-Object System.Drawing.Point(7, 20)
+$randomRadio.Name = "randomRadio"
+$randomRadio.Size = New-Object System.Drawing.Size(109, 17)
+$randomRadio.TabIndex = 6
+$randomRadio.TabStop = $true
+$randomRadio.Text = "Random Guesses"
+$randomRadio.UseVisualStyleBackColor = $true
+#
+# orderRadio
+#
+$orderRadio.AutoSize = $true
+$orderRadio.Location = New-Object System.Drawing.Point(7, 44)
+$orderRadio.Name = "orderRadio"
+$orderRadio.Size = New-Object System.Drawing.Size(79, 17)
+$orderRadio.TabIndex = 7
+$orderRadio.Text = "Go in Order"
+$orderRadio.UseVisualStyleBackColor = $true
 #
 # BitGuesserGUI
 #
 $BitGuesserGUI.ClientSize = New-Object System.Drawing.Size(384, 261)
+$BitGuesserGUI.Controls.Add($modeBox)
 $BitGuesserGUI.Controls.Add($infoBox)
 $BitGuesserGUI.Controls.Add($stopButton)
 $BitGuesserGUI.Controls.Add($startButton)
 $BitGuesserGUI.Controls.Add($refreshButton)
-$BitGuesserGUI.Controls.Add($processAmountSelector)
-$BitGuesserGUI.Controls.Add($processAmountLabel)
+#$BitGuesserGUI.Controls.Add($processAmountSelector)
+#$BitGuesserGUI.Controls.Add($processAmountLabel)
 $BitGuesserGUI.Controls.Add($driveLetterLabel)
 $BitGuesserGUI.Controls.Add($driveSelectBox)
 $BitGuesserGUI.Controls.Add($guesserProgressLabel)

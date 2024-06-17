@@ -7,22 +7,28 @@ param (
     [string]$saveLocation
 )
 
-# Function to generate a single BitLocker recovery key
-function GenerateBitLockerKey {
-    # Initialize an empty array to store the key segments
-    $keySegments = @()
+# Initialize a global variable to store the current key count
+if (-not (Get-Variable -Name currentKey -Scope Global -ErrorAction SilentlyContinue)) {
+    $Global:currentKey = 0
+}
 
-    # Loop to generate 6 segments of 8 digits each
+function GenerateBitLockerKey {
+    # Convert the current key count to a string with leading zeros, padded to 48 digits
+    $keyString = $Global:currentKey.ToString("D48")
+
+    # Split the key string into 6 segments of 8 digits each
+    $keySegments = @()
     for ($i = 0; $i -lt 8; $i++) {
-        # Generate a random 8-digit number
-        $segment = -join ((0..9) | Get-Random -Count 6)
-        
-        # Add the segment to the key segments array
+        $segment = $keyString.Substring($i * 6, 6)
         $keySegments += $segment
     }
 
     # Combine the segments into a single string separated by hyphens
     $mockKey = $keySegments -join '-'
+
+    # Increment the current key count
+    $Global:currentKey++
+
     return $mockKey
 }
 
