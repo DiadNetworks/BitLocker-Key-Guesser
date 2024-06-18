@@ -4,7 +4,9 @@ param (
     [Parameter(Mandatory=$true)]
     [string]$driveLetter,
     [Parameter(Mandatory=$true)]
-    [string]$saveLocation
+    [string]$saveLocation,
+    [Parameter(Mandatory=$true)]
+    [int]$coreCount
 )
 
 # Function to generate a single BitLocker recovery key
@@ -48,6 +50,6 @@ while ($true) {
         catch {
             Write-Host "$recoveryKey FAILED" -ForegroundColor Red
         }
-    } -ThrottleLimit 10000
+    } -ThrottleLimit $coreCount
 }
 Read-Host
