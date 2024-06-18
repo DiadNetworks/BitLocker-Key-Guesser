@@ -4,7 +4,9 @@ param (
     [Parameter(Mandatory=$true)]
     [string]$driveLetter,
     [Parameter(Mandatory=$true)]
-    [string]$saveLocation
+    [string]$saveLocation,
+    [Parameter(Mandatory=$true)]
+    [int]$coreCount
 )
 
 # Initialize a global variable to store the current key count
@@ -54,6 +56,6 @@ while ($true) {
         catch {
             Write-Host "$recoveryKey FAILED" -ForegroundColor Red
         }
-    } -ThrottleLimit 10000
+    } -ThrottleLimit $coreCount
 }
 Read-Host
