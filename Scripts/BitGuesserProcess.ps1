@@ -28,12 +28,12 @@ function GenerateBitLockerKey {
     return $mockKey
 }
 
-$global:bitKeys = @()
 while ($true) {
+    $bitKeys = @()
     for ($i = 0; $i -lt 10000; $i++) {
-        $global:bitKeys += GenerateBitLockerKey
+        $bitKeys += GenerateBitLockerKey
     }
-    $global:bitKeys | ForEach-Object -Parallel {
+    $bitKeys | ForEach-Object -Parallel {
         try {
             $recoveryKey = $_
             $process = Start-Process -FilePath "manage-bde" -ArgumentList "-unlock $using:driveLetter -RecoveryPassword $recoveryKey" -WindowStyle Hidden -PassThru -Wait
