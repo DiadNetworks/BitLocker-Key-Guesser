@@ -26,6 +26,6 @@ Refer to the [controls section](https://github.com/DiadNetworks/BitLocker-Key-Gu
 **Progress Bar:** Just for show.  
 
 ## What happens if it guesses correctly?  
-If one of the processes guesses the correct key, it will unlock the drive and output the key to `SuccessfulKey.txt` in the same folder as `BitGuesser.bat`.  
+If one of the processes guesses the correct key, it will unlock the drive and output the key to `SuccessfulKey.txt` in the `Scripts` folder.  
 
 **Note:** The program won't permanently decrypt the drive, so make sure you go to control panel and do that if that's what you want. If you plan on leaving the drive encrypted, then save the key from `SuccessfulKey.txt`.
