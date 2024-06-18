@@ -3,7 +3,7 @@
 # Get current directory location
 $saveLocation = Get-Location | Select-Object -ExpandProperty Path
 # Get core count
-$coreCount = Get-WmiObject -Class Win32_processor | Select-Object -ExpandProperty NumberOfCores
+$coreCount = Get-CimInstance -ClassName Win32_Processor | Select-Object -ExpandProperty NumberOfCores
 
 function RefreshDrives {
     $driveLetters = [System.IO.DriveInfo]::getdrives() | Where-Object {$_.DriveType -ne 'Network'} | Select-Object -Property Name | ForEach-Object { $_.Name -replace '\\', '' }
