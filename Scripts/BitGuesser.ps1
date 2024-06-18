@@ -2,6 +2,8 @@
 
 # Get current directory location
 $saveLocation = Get-Location | Select-Object -ExpandProperty Path
+# Get core count
+$coreCount = Get-WmiObject -Class Win32_processor | Select-Object -ExpandProperty NumberOfCores
 
 function RefreshDrives {
     $driveLetters = [System.IO.DriveInfo]::getdrives() | Where-Object {$_.DriveType -ne 'Network'} | Select-Object -Property Name | ForEach-Object { $_.Name -replace '\\', '' }
@@ -16,11 +18,11 @@ function OnStartButtonClick {
     $guesserProgressLabel.Text = "Starting bit guesser process..."
     $driveLetter = $driveSelectBox.Text
     if ($randomRadio.Checked -eq $true) {
-        $proc = Start-Process -FilePath pwsh -ArgumentList "-NoProfile -File .\Scripts\BitGuesserProcess.ps1 -driveLetter $driveLetter -saveLocation $saveLocation" -Verb RunAs -WindowStyle Maximized -PassThru
+        $proc = Start-Process -FilePath pwsh -ArgumentList "-NoProfile -File .\Scripts\BitGuesserProcess.ps1 -driveLetter $driveLetter -saveLocation $saveLocation -coreCount $coreCount" -Verb RunAs -WindowStyle Maximized -PassThru
         $global:process += $proc
     }
     elseif ($orderRadio.Checked -eq $true) {
-        $proc = Start-Process -FilePath pwsh -ArgumentList "-NoProfile -File .\Scripts\BitGuesserProcess-InOrder.ps1 -driveLetter $driveLetter -saveLocation $saveLocation" -Verb RunAs -WindowStyle Maximized -PassThru
+        $proc = Start-Process -FilePath pwsh -ArgumentList "-NoProfile -File .\Scripts\BitGuesserProcess-InOrder.ps1 -driveLetter $driveLetter -saveLocation $saveLocation -coreCount $coreCount" -Verb RunAs -WindowStyle Maximized -PassThru
         $global:process += $proc
     }
     $guesserProgressLabel.Text = "Generating keys..."
