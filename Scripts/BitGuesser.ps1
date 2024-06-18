@@ -17,12 +17,13 @@ function OnStartButtonClick {
     $guesserProgressBar.MarqueeAnimationSpeed = 10
     $guesserProgressLabel.Text = "Starting bit guesser process..."
     $driveLetter = $driveSelectBox.Text
+    $adjustedCoreCount = $processAmountSelector.Value
     if ($randomRadio.Checked -eq $true) {
-        $proc = Start-Process -FilePath pwsh -ArgumentList "-NoProfile -File .\Scripts\BitGuesserProcess.ps1 -driveLetter $driveLetter -saveLocation $saveLocation -coreCount $coreCount" -Verb RunAs -WindowStyle Maximized -PassThru
+        $proc = Start-Process -FilePath pwsh -ArgumentList "-NoProfile -File .\Scripts\BitGuesserProcess.ps1 -driveLetter $driveLetter -saveLocation $saveLocation -coreCount $adjustedCoreCount" -Verb RunAs -WindowStyle Maximized -PassThru
         $global:process += $proc
     }
     elseif ($orderRadio.Checked -eq $true) {
-        $proc = Start-Process -FilePath pwsh -ArgumentList "-NoProfile -File .\Scripts\BitGuesserProcess-InOrder.ps1 -driveLetter $driveLetter -saveLocation $saveLocation -coreCount $coreCount" -Verb RunAs -WindowStyle Maximized -PassThru
+        $proc = Start-Process -FilePath pwsh -ArgumentList "-NoProfile -File .\Scripts\BitGuesserProcess-InOrder.ps1 -driveLetter $driveLetter -saveLocation $saveLocation -coreCount $adjustedCoreCount" -Verb RunAs -WindowStyle Maximized -PassThru
         $global:process += $proc
     }
     $guesserProgressLabel.Text = "Generating keys..."
@@ -105,22 +106,22 @@ $driveLetterLabel.Text = "Bit Locked Drive Letter:"
 # processAmountLabel
 #
 $processAmountLabel.AutoSize = $true
-$processAmountLabel.Enabled = $false
+$processAmountLabel.Enabled = $true
 $processAmountLabel.Location = New-Object System.Drawing.Point(12, 43)
 $processAmountLabel.Name = "processAmountLabel"
 $processAmountLabel.Size = New-Object System.Drawing.Size(139, 13)
 $processAmountLabel.TabIndex = 3
-$processAmountLabel.Text = "Amount of processes to run:"
+$processAmountLabel.Text = "Parallel Guesses:"
 #
 # processAmountSelector
 #
-$processAmountSelector.Enabled = $false
+$processAmountSelector.Enabled = $true
 $processAmountSelector.Location = New-Object System.Drawing.Point(175, 41)
-$processAmountSelector.Maximum = 10000
+$processAmountSelector.Maximum = 1000
 $processAmountSelector.Name = "processAmountSelector"
 $processAmountSelector.Size = New-Object System.Drawing.Size(40, 20)
 $processAmountSelector.TabIndex = 4
-$processAmountSelector.Value = 1
+$processAmountSelector.Value = $coreCount
 #
 # refreshButton
 #
@@ -206,8 +207,8 @@ $BitGuesserGUI.Controls.Add($infoBox)
 $BitGuesserGUI.Controls.Add($stopButton)
 $BitGuesserGUI.Controls.Add($startButton)
 $BitGuesserGUI.Controls.Add($refreshButton)
-#$BitGuesserGUI.Controls.Add($processAmountSelector)
-#$BitGuesserGUI.Controls.Add($processAmountLabel)
+$BitGuesserGUI.Controls.Add($processAmountSelector)
+$BitGuesserGUI.Controls.Add($processAmountLabel)
 $BitGuesserGUI.Controls.Add($driveLetterLabel)
 $BitGuesserGUI.Controls.Add($driveSelectBox)
 $BitGuesserGUI.Controls.Add($guesserProgressLabel)
