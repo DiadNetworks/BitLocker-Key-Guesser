@@ -3,7 +3,7 @@ PowerShell script to guess the BitLocker key for a Bit Locked drive.
 
 ## Running the Program
 Powershell 7 or higher is required to be [installed](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.4) on your system.  
-Allow [scripts to be run](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy?view=powershell-7.4) from powershell 7. **Or** unblock the specific script files, see below.  
+Allow [scripts to be run](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy?view=powershell-7.4) from powershell 7. **Or** unblock the specific script files, [see below](#unblock-only-the-necessary-script-files).  
 Download the [latest zip file](https://github.com/DiadNetworks/BitLocker-Key-Guesser/releases/latest).  
 Run `BitGuesser.bat`, preferably as an administrator.  
 Refer to the [controls section](https://github.com/DiadNetworks/BitLocker-Key-Guesser#controls) below for an explanation of the GUI controls.
