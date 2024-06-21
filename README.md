@@ -15,7 +15,7 @@ Refer to the [controls section](https://github.com/DiadNetworks/BitLocker-Key-Gu
   
 **Refresh Drives:** Use this button to refresh the list of drives. Use this if you ran the program before plugging in the bit locked drive.  
 
-**Parallel Guesses:** This determines how many guesses the script will make in parallel. The value is prefilled with the number of cores in your system. You can experiment with making this 2 or 3 times the default, but be careful of going too high or the program may crash.  
+**Parallel Guesses:** This determines how many guesses the script will make in parallel. The value is prefilled with the number of cores in your system. You can experiment with making this 2, 3, 4 or 5 times the default, but be careful of going too high or the program may crash.  
   
 **Mode:** Here you can choose whether to attempt random guesses or to generate keys in order.  
   
