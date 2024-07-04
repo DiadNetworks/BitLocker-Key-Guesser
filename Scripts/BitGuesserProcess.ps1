@@ -40,7 +40,7 @@ while ($true) {
             # Check the exit code of the process
             if ($process.ExitCode -eq 0) {
                 Write-Host "$recoveryKey SUCCESS" -ForegroundColor Green
-                $recoveryKey | Out-File -FilePath "$using:saveLocation" -Append
+                $recoveryKey | Out-File -FilePath "$using:saveLocation\successful-key.txt" -Append
                 Start-Process -FilePath "manage-bde" -ArgumentList "-autounlock -enable $using:driveLetter" -WindowStyle Hidden
                 break
             } else {
