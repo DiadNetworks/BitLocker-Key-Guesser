@@ -10,6 +10,12 @@ function RefreshDrives {
     $driveSelectBox.Items.Clear()
     $driveSelectBox.Items.AddRange($driveLetters)
 }
+function OptimizeSettings {
+    $processAmountSelector.Value = $coreCount*2
+    $noWaitOption.Checked = $true
+    $waitOption.Checked = $false
+    Write-Host "Optimized settings for speed."
+}
 
 $global:process = @()
 function OnStartButtonClick {
@@ -19,12 +25,26 @@ function OnStartButtonClick {
     $driveLetter = $driveSelectBox.Text
     $adjustedCoreCount = $processAmountSelector.Value
     if ($randomRadio.Checked -eq $true) {
-        $proc = Start-Process -FilePath pwsh -ArgumentList "-NoProfile -File .\Scripts\BitGuesserProcess.ps1 -driveLetter $driveLetter -saveLocation $saveLocation -coreCount $adjustedCoreCount" -Verb RunAs -WindowStyle Maximized -PassThru
-        $global:process += $proc
+        if ($waitOption.Checked -eq $true) {
+            $proc = Start-Process -FilePath pwsh -ArgumentList "-NoProfile -File .\Scripts\BitGuesserProcess.ps1 -driveLetter $driveLetter -saveLocation $saveLocation -coreCount $adjustedCoreCount" -Verb RunAs -WindowStyle Maximized -PassThru
+            $global:process += $proc
+            $infoBox.Text = "Currently running with settings:`nMode: Random Guesses`nConfirming Guesses: True`nParallel Guesses: $($adjustedCoreCount)`nDrive Letter: $($driveLetter)"
+        } elseif ($noWaitOption.Checked -eq $true) {
+            $proc = Start-Process -FilePath pwsh -ArgumentList "-NoProfile -File .\Scripts\BitGuesserProcess-NoWait.ps1 -driveLetter $driveLetter -saveLocation $saveLocation -coreCount $adjustedCoreCount" -Verb RunAs -WindowStyle Maximized -PassThru
+            $global:process += $proc
+            $infoBox.Text = "Currently running with settings:`nMode: Random Guesses`nConfirming Guesses: False`nParallel Guesses: $($adjustedCoreCount)`nDrive Letter: $($driveLetter)"
+        }
     }
     elseif ($orderRadio.Checked -eq $true) {
-        $proc = Start-Process -FilePath pwsh -ArgumentList "-NoProfile -File .\Scripts\BitGuesserProcess-InOrder.ps1 -driveLetter $driveLetter -saveLocation $saveLocation -coreCount $adjustedCoreCount" -Verb RunAs -WindowStyle Maximized -PassThru
-        $global:process += $proc
+        if ($waitOption.Checked -eq $true) {
+            $proc = Start-Process -FilePath pwsh -ArgumentList "-NoProfile -File .\Scripts\BitGuesserProcess-InOrder.ps1 -driveLetter $driveLetter -saveLocation $saveLocation -coreCount $adjustedCoreCount" -Verb RunAs -WindowStyle Maximized -PassThru
+            $global:process += $proc
+            $infoBox.Text = "Currently running with settings:`nMode: Ordered Guesses`nConfirming Guesses: True`nParallel Guesses: $($adjustedCoreCount)`nDrive Letter: $($driveLetter)"
+        } elseif ($noWaitOption.Checked -eq $true) {
+            $proc = Start-Process -FilePath pwsh -ArgumentList "-NoProfile -File .\Scripts\BitGuesserProcess-InOrder-NoWait.ps1 -driveLetter $driveLetter -saveLocation $saveLocation -coreCount $adjustedCoreCount" -Verb RunAs -WindowStyle Maximized -PassThru
+            $global:process += $proc
+            $infoBox.Text = "Currently running with settings:`nMode: Ordered Guesses`nConfirming Guesses: False`nParallel Guesses: $($adjustedCoreCount)`nDrive Letter: $($driveLetter)"
+        }
     }
     $guesserProgressLabel.Text = "Generating keys..."
     $startButton.Enabled = $false
@@ -42,6 +62,7 @@ function OnStopButtonClick {
     $guesserProgressLabel.Text = ""
     $startButton.Enabled = $true
     $stopButton.Enabled = $false
+    $infoBox.Text = ""
 }
 
 # Loading external assemblies
@@ -62,8 +83,12 @@ $startButton = New-Object System.Windows.Forms.Button
 $stopButton = New-Object System.Windows.Forms.Button
 $infoBox = New-Object System.Windows.Forms.TextBox
 $modeBox = New-Object System.Windows.Forms.GroupBox
-$randomRadio = New-Object System.Windows.Forms.RadioButton
 $orderRadio = New-Object System.Windows.Forms.RadioButton
+$randomRadio = New-Object System.Windows.Forms.RadioButton
+$advancedOptions = New-Object System.Windows.Forms.GroupBox
+$waitOption = New-Object System.Windows.Forms.RadioButton
+$noWaitOption = New-Object System.Windows.Forms.RadioButton
+$optimizeButton = New-Object System.Windows.Forms.Button
 #
 # guesserProgressBar
 #
@@ -199,9 +224,54 @@ $orderRadio.TabIndex = 7
 $orderRadio.Text = "Go in Order"
 $orderRadio.UseVisualStyleBackColor = $true
 #
+# advancedOptions
+#
+$advancedOptions.Controls.Add($noWaitOption)
+$advancedOptions.Controls.Add($waitOption)
+$advancedOptions.Location = New-Object System.Drawing.Point(158, 67)
+$advancedOptions.Name = "advancedOptions"
+$advancedOptions.Size = New-Object System.Drawing.Size(133, 74)
+$advancedOptions.TabIndex = 8
+$advancedOptions.TabStop = $false
+$advancedOptions.Text = "Advanced"
+#
+# waitOption
+#
+$waitOption.AutoSize = $true
+$waitOption.Checked = $true
+$waitOption.Location = New-Object System.Drawing.Point(7, 20)
+$waitOption.Name = "waitOption"
+$waitOption.Size = New-Object System.Drawing.Size(104, 17)
+$waitOption.TabIndex = 9
+$waitOption.TabStop = $true
+$waitOption.Text = "Confirm Guesses"
+$waitOption.UseVisualStyleBackColor = $true
+#
+# noWaitOption
+#
+$noWaitOption.AutoSize = $true
+$noWaitOption.Location = New-Object System.Drawing.Point(7, 44)
+$noWaitOption.Name = "noWaitOption"
+$noWaitOption.Size = New-Object System.Drawing.Size(88, 17)
+$noWaitOption.TabIndex = 10
+$noWaitOption.Text = "Don\'t Confirm"
+$noWaitOption.UseVisualStyleBackColor = $true
+#
+# optimizeButton
+#
+$optimizeButton.Location = New-Object System.Drawing.Point(298, 67)
+$optimizeButton.Name = "optimizeButton"
+$optimizeButton.Size = New-Object System.Drawing.Size(74, 74)
+$optimizeButton.TabIndex = 11
+$optimizeButton.Text = "Optimize Settings for Speed"
+$optimizeButton.UseVisualStyleBackColor = $true
+$optimizeButton.Add_Click({OptimizeSettings})
+#
 # BitGuesserGUI
 #
 $BitGuesserGUI.ClientSize = New-Object System.Drawing.Size(384, 261)
+$BitGuesserGUI.Controls.Add($optimizeButton)
+$BitGuesserGUI.Controls.Add($advancedOptions)
 $BitGuesserGUI.Controls.Add($modeBox)
 $BitGuesserGUI.Controls.Add($infoBox)
 $BitGuesserGUI.Controls.Add($stopButton)
