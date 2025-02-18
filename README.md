@@ -18,6 +18,10 @@ Refer to the [controls section](https://github.com/DiadNetworks/BitLocker-Key-Gu
 **Parallel Guesses:** This determines how many guesses the script will make in parallel. The value is prefilled with the number of cores in your system. You can experiment with making this 2, 3, 4 or 5 times the default, but be careful of going too high or the program may crash.  
   
 **Mode:** Here you can choose whether to attempt random guesses or to generate keys in order.  
+
+**Advanced:** You can select whether the program should wait for confirmation whether the guessed key was successful or not. If you select "Don't Confirm", the program won't know if it guessed the correct key and will continue to guess even if the drive has been unlocked. This will, however, speed up the guessing drastically.  
+
+**Optimize Settings for Speed:** Clicking this button sets the program's settings for best speed.
   
 **Info Window:** For future use.  
   

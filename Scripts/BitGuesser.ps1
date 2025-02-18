@@ -254,7 +254,7 @@ $noWaitOption.Location = New-Object System.Drawing.Point(7, 44)
 $noWaitOption.Name = "noWaitOption"
 $noWaitOption.Size = New-Object System.Drawing.Size(88, 17)
 $noWaitOption.TabIndex = 10
-$noWaitOption.Text = "Don\'t Confirm"
+$noWaitOption.Text = "Don't Confirm"
 $noWaitOption.UseVisualStyleBackColor = $true
 #
 # optimizeButton
